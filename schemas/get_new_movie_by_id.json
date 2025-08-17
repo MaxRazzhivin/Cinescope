@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generated schema for Root",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "published": {
+      "type": "boolean"
+    },
+    "genreId": {
+      "type": "number"
+    },
+    "genre": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "text": {
+            "type": "string"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "fullName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "fullName"
+            ]
+          }
+        },
+        "required": [
+          "userId",
+          "rating",
+          "text",
+          "hidden",
+          "createdAt",
+          "user"
+        ]
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "price",
+    "description",
+    "location",
+    "published",
+    "genreId",
+    "genre",
+    "createdAt",
+    "rating",
+    "reviews"
+  ]
+}
