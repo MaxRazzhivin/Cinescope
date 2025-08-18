@@ -4,8 +4,7 @@ import os
 
 from dotenv import load_dotenv
 
-from constants import BASE_URL, HEADERS, LOGIN_ENDPOINT, MOVIES_URL, MOVIES_ENDPOINT, \
-    REGISTER_ENDPOINT
+from constants import BASE_URL, HEADERS, LOGIN_ENDPOINT, REGISTER_ENDPOINT
 from tests.api.api_manager import ApiManager
 from utils.data_generator import DataGenerator
 
@@ -54,6 +53,54 @@ password = os.getenv('PASSWORD')
 #
 #     yield payload, response_data
 
+
+
+# @pytest.fixture(scope='session')
+# def auth_session(test_user):
+#     # Регистрируем нового пользователя
+#     register_url = f'{BASE_URL}{REGISTER_ENDPOINT}'
+#     reg_response = requests.post(register_url, json=test_user, headers=HEADERS)
+#
+#     assert reg_response.status_code in (200, 201),(
+#         f"Ошибка регистрации: {reg_response.status_code} {reg_response.text}")
+#
+#     # Логинимся для получения токена
+#     login_url = f"{BASE_URL}{LOGIN_ENDPOINT}"
+#     login_data = {
+#         "email": test_user['email'],
+#         "password": test_user['password']
+#     }
+#
+#     login_response = requests.post(login_url, json=login_data, headers=HEADERS)
+#     assert login_response.status_code == 200, (
+#         f"Ошибка авторизации: {login_response.status_code}{login_response.text}")
+#     log_json = login_response.json()
+#
+#
+#     # Получаем токен
+#     token = log_json.get('accessToken')
+#     assert token is not None, "Токен не найден в ответе"
+#
+#     # Cоздаем отдельные заголовки с токеном
+#     auth_headers = HEADERS.copy()
+#     auth_headers["Authorization"] = f"Bearer {token}"
+#
+#     # Создаем новую сессию с заголовками
+#     session = requests.Session()
+#     session.headers.update(auth_headers)
+#
+#     return session, reg_response, login_response
+
+
+
+# @pytest.fixture(scope='session')
+# def requester():
+#     """
+#         Фикстура для создания экземпляра CustomRequester.
+#         """
+#     session = requests.Session()
+#     return CustomRequester(session=session, base_url=BASE_URL)
+
 @pytest.fixture(scope='session')
 def test_user():
     '''
@@ -69,52 +116,6 @@ def test_user():
         'password': random_password,
         'passwordRepeat': random_password
     }
-
-@pytest.fixture(scope='session')
-def auth_session(test_user):
-    # Регистрируем нового пользователя
-    register_url = f'{BASE_URL}{REGISTER_ENDPOINT}'
-    reg_response = requests.post(register_url, json=test_user, headers=HEADERS)
-
-    assert reg_response.status_code in (200, 201),(
-        f"Ошибка регистрации: {reg_response.status_code} {reg_response.text}")
-
-    # Логинимся для получения токена
-    login_url = f"{BASE_URL}{LOGIN_ENDPOINT}"
-    login_data = {
-        "email": test_user['email'],
-        "password": test_user['password']
-    }
-
-    log_response = requests.post(login_url, json=login_data, headers=HEADERS)
-    assert log_response.status_code == 200, (
-        f"Ошибка авторизации: {log_response.status_code}{log_response.text}")
-    log_json = log_response.json()
-
-
-    # Получаем токен
-    token = log_json.get('accessToken')
-    assert token is not None, "Токен не найден в ответе"
-
-    # Cоздаем отдельные заголовки с токеном
-    auth_headers = HEADERS.copy()
-    auth_headers["Authorization"] = f"Bearer {token}"
-
-    # Создаем новую сессию с заголовками
-    session = requests.Session()
-    session.headers.update(auth_headers)
-
-    return session, reg_response, log_response
-
-
-@pytest.fixture(scope='session')
-def requester():
-    """
-        Фикстура для создания экземпляра CustomRequester.
-        """
-    session = requests.Session()
-    return CustomRequester(session=session, base_url=BASE_URL)
-
 
 @pytest.fixture(scope='session')
 def registered_user(api_manager, test_user):
@@ -168,7 +169,3 @@ def created_movie(api_manager, test_movie):
         api_manager.movies_api.delete_movie(response_body['id'], expected_status=200)
     except Exception:
         pass
-
-
-
-

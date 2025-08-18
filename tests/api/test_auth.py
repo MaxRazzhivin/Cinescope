@@ -1,3 +1,4 @@
+from conftest import api_manager
 from constants import LOGIN_ENDPOINT
 from tests.api.api_manager import ApiManager
 
@@ -50,15 +51,18 @@ class TestAuthAPI:
         assert "error" in response.json() or "message" in response.json(), \
             "В ответе нет информации об ошибке"
 
-    def test_login_empty_body(self, requester):
+    def test_login_empty_body(self, api_manager):
         '''
         Тест на авторизацию с пустым телом запроса
         Ошибку ждем 401
         '''
-        requester.send_request(
-            method='POST',
-            endpoint=LOGIN_ENDPOINT,
-            data={},
-            expected_status=401
-        )
+
+        empty_creds = {
+            'email': '',
+            'password': ''
+        }
+        response = api_manager.auth_api.login_user(login_data=empty_creds, expected_status=401)
+
+        assert "error" in response.json() or "message" in response.json(), \
+            "В ответе нет информации об ошибке"
 
