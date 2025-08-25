@@ -1,8 +1,3 @@
-from conftest import api_manager
-from constants import LOGIN_ENDPOINT
-from tests.api.api_manager import ApiManager
-
-
 class TestAuthAPI:
     def test_register_user(self, registered_user):
         """
@@ -16,7 +11,7 @@ class TestAuthAPI:
         assert "roles" in response_data, "Роли пользователя отсутствуют в ответе"
         assert "USER" in response_data["roles"], "Роль USER должна быть у пользователя"
 
-    def test_register_and_login_user(self, api_manager: ApiManager, registered_user):
+    def test_register_and_login_user(self, registered_user, user_session):
         """
         Тест на регистрацию и авторизацию пользователя.
         """
@@ -26,7 +21,9 @@ class TestAuthAPI:
             "email": test_user_with_id["email"],
             "password": test_user_with_id["password"]
         }
-        response = api_manager.auth_api.login_user(login_data)
+
+        api = user_session()
+        response = api.auth_api.login_user(login_data)
         response_data = response.json()
 
         # Проверки
@@ -34,7 +31,7 @@ class TestAuthAPI:
         assert response_data["user"]["email"] == test_user_with_id["email"], "Email не совпадает"
 
 
-    def test_login_wrong_password(self, api_manager: ApiManager, registered_user):
+    def test_login_wrong_password(self, registered_user, user_session):
         '''
         Тест на авторизацию с неверным паролем
         Задаем статус 401, так как в методе по умолчанию 200 идет
@@ -46,12 +43,15 @@ class TestAuthAPI:
             'email': test_user_with_id['email'],
             'password': 'some_error_passwrd123'
         }
-        response = api_manager.auth_api.login_user(wrong_data, expected_status=401)
+
+        api = user_session()
+
+        response = api.auth_api.login_user(wrong_data, expected_status=401)
 
         assert "error" in response.json() or "message" in response.json(), \
             "В ответе нет информации об ошибке"
 
-    def test_login_empty_body(self, api_manager):
+    def test_login_empty_body(self, user_session):
         '''
         Тест на авторизацию с пустым телом запроса
         Ошибку ждем 401
@@ -61,7 +61,10 @@ class TestAuthAPI:
             'email': '',
             'password': ''
         }
-        response = api_manager.auth_api.login_user(login_data=empty_creds, expected_status=401)
+
+        api = user_session()
+
+        response = api.auth_api.login_user(login_data=empty_creds, expected_status=401)
 
         assert "error" in response.json() or "message" in response.json(), \
             "В ответе нет информации об ошибке"
