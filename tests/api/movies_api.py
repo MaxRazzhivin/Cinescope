@@ -17,6 +17,26 @@ class MoviesApi(CustomRequester):
             expected_status=expected_status
         )
 
+    def get_movies_with_filter(self, query=None, expected_status=200):
+        '''
+        Получение фильмов по фильтрам
+
+        Пример query: {
+            "minPrice": 100, "maxPrice": 1000,
+            "locations": ["MSK", "SPB"],   # requests сам превратит
+             в &locations=MSK&locations=SPB
+            "genreId": 1,
+            "published": True,
+            "page": 1, "pageSize": 20
+        }
+        '''
+        return self.send_request(
+            method='GET',
+            endpoint=MOVIES_ENDPOINT,
+            params=query,
+            expected_status=expected_status
+        )
+
     def create_movie(self, movie_data, expected_status=201):
         '''
         :param movie_data: Данные о фильме
@@ -36,14 +56,6 @@ class MoviesApi(CustomRequester):
             endpoint=f'{MOVIES_ENDPOINT}/{movie_id}',
             expected_status=expected_status
         )
-
-    # def update_movie(self, movie_id, movie_data, expected_status=200):
-    #     return self.send_request(
-    #         method='PUT',
-    #         endpoint=f'{MOVIES_ENDPOINT}/{movie_id}',
-    #         data=movie_data,
-    #         expected_status=expected_status
-    #     )
 
     def update_movie(self, movie_id, movie_data, expected_status=200):
         return self.send_request(
