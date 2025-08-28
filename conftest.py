@@ -10,11 +10,6 @@ from resources.user_creds import SuperAdminCreds
 from tests.api.api_manager import ApiManager
 from utils.data_generator import DataGenerator
 
-
-load_dotenv()
-username = os.getenv('USERNAME')
-password = os.getenv('PASSWORD')
-
 @pytest.fixture
 def test_user():
     '''
@@ -42,30 +37,6 @@ def registered_user(super_admin, test_user):
     test_user_with_id = test_user.copy()
     test_user_with_id['id'] = response_data['id']
     return response_data, test_user_with_id
-
-
-# @pytest.fixture(scope='session')
-# def session():
-#     '''
-#     Фикстура для создания HTTP-сессии.
-#     '''
-#     http_session = requests.Session()
-#     yield http_session
-#     http_session.close()
-
-# @pytest.fixture(scope='session')
-# def api_manager(session):
-#     '''
-#     Фикстура для создания экземпляра ApiManager.
-#     '''
-#     return ApiManager(session)
-
-# @pytest.fixture(scope="session")
-# def admin_auth(api_manager):
-#     """
-#     Автоматическая авторизация админом перед всеми тестами.
-#     """
-#     api_manager.auth_api.authenticate((username, password))
 
 @pytest.fixture
 def test_movie():
@@ -106,8 +77,8 @@ def super_admin(user_session):
     new_session = user_session()
 
     super_admin = User(
-        SuperAdminCreds.USERNAME,
-        SuperAdminCreds.PASSWORD,
+        SuperAdminCreds.SUPER_ADMIN_USERNAME,
+        SuperAdminCreds.SUPER_ADMIN_PASSWORD,
         [Roles.SUPER_ADMIN.value],
         new_session
     )

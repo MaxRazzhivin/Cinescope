@@ -152,6 +152,30 @@ class TestMoviesAPI:
             schema = json.load(file)
         validate(response.json(), schema)  # Валидация ответа от сервера
 
+    @pytest.mark.parametrize(
+        'actor_fixture,expected_status', [
+            ('super_admin', 200),
+            ('admin_user', 403),
+            ('common_user', 403)
+        ]
+    )
+    def test_delete_movie_by_id_with_roles(self, created_movie, request,
+                                           actor_fixture, expected_status):
+        '''
+        Проверка удаления фильма под разными ролями.
+        Вначале создаем фильм через super_admin фикстуру created_movie
+        Затем через request.getfixturevalue(actor_fixture) вытаскиваем фикстуры по
+        очереди для параметризации - super_admin, admin_user, common_user
+        '''
+
+        movie, _ = created_movie
+        movie_id = movie["id"]
+
+        # получаем объект пользователя-исполнителя по имени фикстуры
+        actor = request.getfixturevalue(actor_fixture)
+
+        actor.api.movies_api.delete_movie(movie_id,
+                                                 expected_status=expected_status)
 
     def test_user_cannot_create_movie(self, common_user, test_movie):
         '''
