@@ -10,6 +10,7 @@ from constants import MOVIES_URL, MOVIES_ENDPOINT
 
 
 class TestMoviesAPI:
+    @pytest.mark.slow
     def test_get_movies(self, common_user):
         """
         Тест на получение списка фильмов
@@ -31,7 +32,7 @@ class TestMoviesAPI:
             schema = json.load(file)
         validate(response.json(), schema)  # Валидация ответа от сервера
 
-
+    @pytest.mark.slow
     @pytest.mark.parametrize(
         'min_price,max_price,locations,genre_id',
         [
@@ -86,6 +87,7 @@ class TestMoviesAPI:
             schema = json.load(file)
         validate(movie, schema)  # Валидация ответа от сервера
 
+    @pytest.mark.slow
     def test_get_movie_by_id(self, created_movie, common_user):
         '''
         Получение инфы про созданный фильм по ID
@@ -194,7 +196,7 @@ class TestMoviesAPI:
         common_user.api.movies_api.get_movies_with_filter(query=query,
                                                           expected_status=400)
 
-
+    @pytest.mark.slow
     def test_delete_without_auth(self, created_movie):
         '''
         Проверка на удаление без авторизации

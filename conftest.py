@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 from constants import Roles
 from entities.user import User
+from models.user_model import UserModel
 from resources.user_creds import SuperAdminCreds
 from tests.api.api_manager import ApiManager
 from utils.data_generator import DataGenerator
@@ -19,12 +20,13 @@ def test_user():
     random_name = DataGenerator.generate_random_name()
     random_password = DataGenerator.generate_random_password()
 
-    return {
-        "email": random_email,
-        "fullName": random_name,
-        'password': random_password,
-        'passwordRepeat': random_password,
-    }
+    return UserModel(
+        email=random_email,
+        fullName=random_name,
+        password=random_password,
+        passwordRepeat=random_password,
+        roles=[Roles.USER.value]
+    ).model_dump()
 
 @pytest.fixture
 def registered_user(super_admin, test_user):
