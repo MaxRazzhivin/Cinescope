@@ -14,7 +14,8 @@ from utils.data_generator import DataGenerator
 @pytest.fixture
 def test_user():
     '''
-    Генерация случайного пользователя для тестов
+    Генерация случайного пользователя для тестов через модель Pydantic
+    Наружу возвращаем dict для requests через .model_dump()
     '''
     random_email = DataGenerator.generate_random_email()
     random_name = DataGenerator.generate_random_name()
@@ -25,8 +26,8 @@ def test_user():
         fullName=random_name,
         password=random_password,
         passwordRepeat=random_password,
-        roles=[Roles.USER.value]
-    ).model_dump()
+        roles=[Roles.USER]
+    ).model_dump(exclude_unset=True)
 
 @pytest.fixture
 def registered_user(super_admin, test_user):
@@ -81,7 +82,7 @@ def super_admin(user_session):
     super_admin = User(
         SuperAdminCreds.SUPER_ADMIN_USERNAME,
         SuperAdminCreds.SUPER_ADMIN_PASSWORD,
-        [Roles.SUPER_ADMIN.value],
+        [Roles.SUPER_ADMIN],
         new_session
     )
 
@@ -97,7 +98,7 @@ def common_user(user_session, super_admin, creation_user_data):
     common_user = User(
         creation_user_data['email'],
         creation_user_data['password'],
-        [Roles.USER.value],
+        [Roles.USER],
         new_session)
 
 
@@ -121,7 +122,7 @@ def admin_user(user_session, super_admin, creation_user_data):
     admin_user = User(
         payload['email'],
         payload['password'],
-        [Roles.ADMIN.value],
+        [Roles.ADMIN],
         new_session
     )
 
