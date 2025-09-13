@@ -20,9 +20,6 @@
           "description": {
             "type": "string"
           },
-          "imageUrl": {
-            "type": "string"
-          },
           "location": {
             "type": "string"
           },
@@ -55,7 +52,6 @@
           "name",
           "price",
           "description",
-          "imageUrl",
           "location",
           "published",
           "genreId",

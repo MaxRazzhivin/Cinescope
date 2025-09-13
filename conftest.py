@@ -6,16 +6,17 @@ from dotenv import load_dotenv
 
 from constants import Roles
 from entities.user import User
-from models.user_model import UserModel
+from models.user_model import UserModel, RegisterUserResponse
 from resources.user_creds import SuperAdminCreds
 from tests.api.api_manager import ApiManager
 from utils.data_generator import DataGenerator
 
 @pytest.fixture
-def test_user():
+def test_user() -> UserModel:
     '''
     Генерация случайного пользователя для тестов через модель Pydantic
-    Наружу возвращаем dict для requests через .model_dump()
+    Наружу возвращаем объект модели UserModel для чистоты, десериализация будет позже
+    ближе к API передаче данных
     '''
     random_email = DataGenerator.generate_random_email()
     random_name = DataGenerator.generate_random_name()
@@ -27,19 +28,30 @@ def test_user():
         password=random_password,
         passwordRepeat=random_password,
         roles=[Roles.USER]
-    ).model_dump(exclude_unset=True)
+    )
 
 @pytest.fixture
 def registered_user(super_admin, test_user):
     '''
     Фикстуры для регистрации и получения данных зарегистрированного пользователя
     '''
-    response = super_admin.api.auth_api.register_user(test_user)
 
-    response_data = response.json()
-    test_user_with_id = test_user.copy()
-    test_user_with_id['id'] = response_data['id']
-    return response_data, test_user_with_id
+    # Здесь сам запрос и сверка статус-кода ответа
+    response = super_admin.api.auth_api.register_user(test_user)
+    assert response.status_code == 201
+
+    # Здесь валидация ответа через Pydantic, внутри распаковка словаря для создания
+    # объекта от класса RegisterUserResponse
+    response_data_model = RegisterUserResponse(**response.json())
+
+    # создаем копию юзера, в который далее положим id для удобства
+    test_user_with_id = test_user.model_dump().copy()
+
+    # добавляем в него id из сообщения об успешной регистрации
+    test_user_with_id['id'] = response_data_model.id
+
+    # возвращаем из фикстуры дальше тело ответа и payload изначальный + id в нем
+    return response_data_model, test_user_with_id
 
 @pytest.fixture
 def test_movie():
@@ -93,7 +105,9 @@ def super_admin(user_session):
 def common_user(user_session, super_admin, creation_user_data):
     new_session = user_session()
 
-    new_user = super_admin.api.user_api.create_user(creation_user_data)
+    new_user = super_admin.api.user_api.create_user(creation_user_data,
+                                                    expected_status=201)
+    new_user_id = new_user.json()['id']
 
     common_user = User(
         creation_user_data['email'],
@@ -106,7 +120,7 @@ def common_user(user_session, super_admin, creation_user_data):
     yield common_user
 
     try:
-        super_admin.api.user_api.delete_user(new_user['id'])
+        super_admin.api.user_api.delete_user(new_user_id)
     except Exception:
         pass
 
@@ -117,7 +131,8 @@ def admin_user(user_session, super_admin, creation_user_data):
     payload = creation_user_data.copy()
     payload['roles'] = [Roles.ADMIN.value]
 
-    new_admin = super_admin.api.user_api.create_user(payload)
+    new_admin = super_admin.api.user_api.create_user(payload, expected_status=201)
+    new_admin_id = new_admin.json()['id']
 
     admin_user = User(
         payload['email'],
@@ -130,7 +145,7 @@ def admin_user(user_session, super_admin, creation_user_data):
     yield admin_user
 
     try:
-        super_admin.api.user_api.delete_user(new_admin['id'])
+        super_admin.api.user_api.delete_user(new_admin_id)
     except Exception:
         pass
 
@@ -139,11 +154,10 @@ def admin_user(user_session, super_admin, creation_user_data):
 
 @pytest.fixture
 def creation_user_data(test_user):
-    updated_data = test_user.copy()
+    updated_data = test_user.model_dump().copy()
     updated_data.update({
         'verified': True,
-        'banned': False,
-        "roles": [Roles.USER.value]
+        'banned': False
     })
     return updated_data
 

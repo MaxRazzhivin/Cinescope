@@ -1,15 +1,24 @@
+from constants import Roles
+
+
 class TestAuthAPI:
     def test_register_user(self, registered_user):
         """
         Тест на регистрацию пользователя.
         """
-        response_data, test_user_with_id = registered_user
+        response_data_model, test_user_with_id = registered_user
 
         # Проверки
-        assert response_data["email"] == test_user_with_id["email"], "Email не совпадает"
-        assert "id" in response_data, "ID пользователя отсутствует в ответе"
-        assert "roles" in response_data, "Роли пользователя отсутствуют в ответе"
-        assert "USER" in response_data["roles"], "Роль USER должна быть у пользователя"
+        assert response_data_model.fullName == test_user_with_id["fullName"], \
+            'Фамилия не совпала в payload и в ответе'
+
+        assert response_data_model.email == test_user_with_id["email"], ("Email не "
+                                                                       "совпадает")
+        assert Roles.USER in response_data_model.roles, ("Роль USER должна быть у "
+                                                    "пользователя")
+        # сравнение поля Enum Roles в модели и в JSON-ответе
+        assert [r.value for r in response_data_model.roles] == test_user_with_id[
+            'roles']
 
     def test_register_and_login_user(self, registered_user, user_session):
         """

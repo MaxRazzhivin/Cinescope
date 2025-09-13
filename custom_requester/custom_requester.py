@@ -1,9 +1,10 @@
-
 import json
 import logging
 import os
 
-from constants import HEADERS
+from pydantic import BaseModel
+
+from constants import HEADERS, GREEN, RESET, RED
 
 
 class CustomRequester:
@@ -15,7 +16,7 @@ class CustomRequester:
     def __init__(self, session, base_url):
         self.session = session
         self.base_url = base_url
-        self.headers = self.base_headers.copy()
+        self.session.headers = self.base_headers.copy()
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -32,9 +33,13 @@ class CustomRequester:
         :return: Объект ответа requests.Response.
         '''
 
+        if isinstance(data, BaseModel):
+            data = json.loads(data.model_dump_json(exclude_unset=True))
+
         url = f"{self.base_url}{endpoint}"
-        response = self.session.request(method, url, json=data, headers=self.headers,
+        response = self.session.request(method, url, json=data,
                                         params=params)
+
         if need_logging:
             self.log_request_and_response(response)
         if response.status_code != expected_status:
@@ -47,15 +52,17 @@ class CustomRequester:
         :param session: Объект requests.Session, предоставленный API-классом.
         :param kwargs: Дополнительные заголовки.
         '''
-        self.headers.update(kwargs) # Обновляем базовые заголовки
-        session.headers.update(self.headers) # Обновляем заголовки в текущей сессии
+        session.headers.update(kwargs) # Обновляем заголовки в текущей сессии
 
     def log_request_and_response(self, response):
+        """
+                Логгирование запросов и ответов. Настройки логгирования описаны в pytest.ini
+                Преобразует вывод в curl-like (-H хэдэеры), (-d тело)
+
+                :param response: Объект response получаемый из метода "send_request"
+                """
         try:
             request = response.request
-            GREEN = '\033[32m'
-            RED = '\033[31m'
-            RESET = '\033[0m'
             headers = " \\\n".join([f"-H '{header}: {value}'" for header, value in request.headers.items()])
             full_test_name = f"pytest {os.environ.get('PYTEST_CURRENT_TEST', '').replace(' (call)', '')}"
 

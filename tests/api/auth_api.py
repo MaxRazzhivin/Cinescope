@@ -1,5 +1,11 @@
+from collections.abc import Mapping
+from typing import Union
+
+from pydantic import BaseModel
+
 from constants import REGISTER_ENDPOINT, LOGIN_ENDPOINT, BASE_URL
 from custom_requester.custom_requester import CustomRequester
+from models.user_model import UserModel
 
 
 class AuthAPI(CustomRequester):
@@ -11,20 +17,29 @@ class AuthAPI(CustomRequester):
         super().__init__(session=session,
                          base_url=BASE_URL)
 
-    def register_user(self, user_data, expected_status=201):
+    # Метод для валидации между словарем и объектом Pydantic -> возвращает словарь
+    def _to_payload(self, data: Union[BaseModel, Mapping]):
+        if isinstance(data, BaseModel):
+            return data.model_dump(exclude_unset=True)
+        return dict(data)
+
+    def register_user(self, user_data:Union[UserModel, dict], expected_status=201):
         '''
-        Регистраиця нового пользователя.
+        Регистрация нового пользователя.
         :param user_data: Данные пользователя.
         :param expected_status: Ожидаемый статус-код.
         '''
+        payload = self._to_payload(user_data) # Отправляем в валидатор, убеждаемся,
+        # что будет словарь
+
         return self.send_request(
             method='POST',
             endpoint=REGISTER_ENDPOINT,
-            data=user_data,
+            data=payload,
             expected_status=expected_status
         )
 
-    def login_user(self, login_data, expected_status=200):
+    def login_user(self, login_data, expected_status=201):
         '''
         Авторизация пользователя.
         :param login_data: Данные для логина.
