@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from constants import REGISTER_ENDPOINT, LOGIN_ENDPOINT, BASE_URL
 from custom_requester.custom_requester import CustomRequester
-from models.user_model import UserModel
+from models.user_model import UserModel, LoginRequest
 
 
 class AuthAPI(CustomRequester):
@@ -39,7 +39,7 @@ class AuthAPI(CustomRequester):
             expected_status=expected_status
         )
 
-    def login_user(self, login_data, expected_status=201):
+    def login_user(self, login_data: Union[LoginRequest, dict], expected_status=201):
         '''
         Авторизация пользователя.
         :param login_data: Данные для логина.

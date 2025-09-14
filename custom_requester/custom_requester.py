@@ -34,7 +34,7 @@ class CustomRequester:
         '''
 
         if isinstance(data, BaseModel):
-            data = json.loads(data.model_dump_json(exclude_unset=True))
+            data = data.model_dump(exclude_unset=True)
 
         url = f"{self.base_url}{endpoint}"
         response = self.session.request(method, url, json=data,

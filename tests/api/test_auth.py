@@ -1,4 +1,7 @@
+from datetime import datetime, timezone
+
 from constants import Roles
+from models.user_model import LoginResponse, LoginRequest
 
 
 class TestAuthAPI:
@@ -25,19 +28,22 @@ class TestAuthAPI:
         Тест на регистрацию и авторизацию пользователя.
         """
         _, test_user_with_id = registered_user
+        api = user_session()
 
         login_data = {
             "email": test_user_with_id["email"],
             "password": test_user_with_id["password"]
         }
 
-        api = user_session()
-        response = api.auth_api.login_user(login_data)
-        response_data = response.json()
+        login_data_model = LoginRequest(**login_data)
+
+        response = api.auth_api.login_user(login_data_model, expected_status=201)
+        response_data_model = LoginResponse(**response.json())
 
         # Проверки
-        assert "accessToken" in response_data, "Токен доступа отсутствует в ответе"
-        assert response_data["user"]["email"] == test_user_with_id["email"], "Email не совпадает"
+        assert response_data_model.user.email == test_user_with_id["email"], \
+            "Email не совпадает"
+        assert isinstance(response_data_model.expiresIn, datetime)
 
 
     def test_login_wrong_password(self, registered_user, user_session):
