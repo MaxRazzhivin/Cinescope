@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from typing import Iterable
 
 from pydantic import BaseModel
 
@@ -21,7 +22,8 @@ class CustomRequester:
         self.logger.setLevel(logging.INFO)
 
     def send_request(self, method, endpoint, data=None, params=None,
-                     expected_status=200, need_logging=True):
+                     expected_status: int | Iterable[int] = 200,
+                     need_logging=True):
         '''
         Универсальный метод для отправки запросов.
         :param method: HTTP метод (GET, POST, PUT, PATCH, DELETE).
@@ -42,8 +44,16 @@ class CustomRequester:
 
         if need_logging:
             self.log_request_and_response(response)
-        if response.status_code != expected_status:
-            raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
+
+        # Делаем, чтобы можно было принимать несколько статус-кодов
+        if isinstance(expected_status, int):
+            allowed = {expected_status}
+        else:
+            allowed = set(expected_status)
+
+        if response.status_code not in allowed:
+            raise ValueError(f"Unexpected status code: {response.status_code}. "
+                             f"Expected one of: {sorted(allowed)}")
         return response
 
     def update_session_headers(self, session, **kwargs):

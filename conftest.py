@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 from constants import Roles
 from entities.user import User
+from models.movies_model import PostMovieRequest
+from models.user_create_models import CreateUserRequest
 from models.user_model import UserModel, RegisterUserResponse
 from resources.user_creds import SuperAdminCreds
 from tests.api.api_manager import ApiManager
@@ -55,7 +57,7 @@ def registered_user(super_admin, test_user):
 
 @pytest.fixture
 def test_movie():
-    return DataGenerator.generate_movie_data()
+    return PostMovieRequest(**DataGenerator.generate_movie_data())
 
 @pytest.fixture
 def created_movie(super_admin, test_movie):
@@ -102,7 +104,7 @@ def super_admin(user_session):
     return super_admin
 
 @pytest.fixture
-def common_user(user_session, super_admin, creation_user_data):
+def common_user(user_session, super_admin, creation_user_data: CreateUserRequest):
     new_session = user_session()
 
     new_user = super_admin.api.user_api.create_user(creation_user_data,
@@ -110,8 +112,8 @@ def common_user(user_session, super_admin, creation_user_data):
     new_user_id = new_user.json()['id']
 
     common_user = User(
-        creation_user_data['email'],
-        creation_user_data['password'],
+        creation_user_data.email,
+        creation_user_data.password,
         [Roles.USER],
         new_session)
 
@@ -128,7 +130,7 @@ def common_user(user_session, super_admin, creation_user_data):
 def admin_user(user_session, super_admin, creation_user_data):
     new_session = user_session()
 
-    payload = creation_user_data.copy()
+    payload = creation_user_data.model_dump().copy()
     payload['roles'] = [Roles.ADMIN.value]
 
     new_admin = super_admin.api.user_api.create_user(payload, expected_status=201)
@@ -153,13 +155,13 @@ def admin_user(user_session, super_admin, creation_user_data):
 
 
 @pytest.fixture
-def creation_user_data(test_user):
+def creation_user_data(test_user: UserModel) -> CreateUserRequest:
     updated_data = test_user.model_dump().copy()
     updated_data.update({
         'verified': True,
         'banned': False
     })
-    return updated_data
+    return CreateUserRequest(**updated_data)
 
 @pytest.fixture
 def created_user(super_admin, creation_user_data):

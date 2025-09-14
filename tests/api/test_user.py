@@ -1,31 +1,61 @@
+from constants import Roles
+from models.errors_model import ForbiddenResponse
+from models.user_create_models import CreateUserRequest, CreateUserResponse, \
+    GetUserResponse
+
+
 class TestUser:
 
-    def test_create_user(self, super_admin, creation_user_data):
+    def test_create_user(self, super_admin, creation_user_data: CreateUserRequest):
         response = super_admin.api.user_api.create_user(creation_user_data,
         expected_status=201).json()
 
-        assert response.get('id') and response['id'] != '', "ID должен быть не пустым"
-        assert response.get('email') == creation_user_data['email']
-        assert response.get('fullName') == creation_user_data['fullName']
-        assert "roles" in response
-        assert "USER" in response["roles"]
-        assert response.get('verified') is True
+        user_model = CreateUserResponse(**response)
 
-        super_admin.api.user_api.delete_user(response['id'])
+        assert user_model.id, "ID должен быть не пустым"
+        assert user_model.email == creation_user_data.email
+        assert user_model.fullName == creation_user_data.fullName
+        assert Roles.USER in user_model.roles  # Enum(str) — сравнение с самим Roles.USER ок
+        assert user_model.verified is True
+        assert user_model.banned is False
+
+        # teardown
+        super_admin.api.user_api.delete_user(user_model.id)
 
 
     def test_get_user_by_locator(self, super_admin, created_user):
+        '''
+        created: dict
+        payload: модель CreateUserRequest
+        '''
         created, payload = created_user
 
         response_by_id = super_admin.api.user_api.get_user(created['id']).json()
-        response_by_email = super_admin.api.user_api.get_user(payload['email']).json()
+        user_model_by_id = GetUserResponse(**response_by_id)
 
-        assert response_by_id == response_by_email, "Содержание ответов должно быть идентичным"
-        assert response_by_id.get('id') and response_by_id['id'] != '', "ID должен быть не пустым"
-        assert response_by_id.get('email') == payload['email']
-        assert response_by_id.get('fullName') == payload['fullName']
-        assert "USER" in response_by_id.get("roles", [])
-        assert response_by_id.get('verified') is True
+        response_by_email = super_admin.api.user_api.get_user(payload.email).json()
+        user_model_by_email = GetUserResponse(**response_by_email)
 
-    def test_get_user_by_id_common_user(self, common_user):
-        common_user.api.user_api.get_user(common_user.email, expected_status=403)
+        # Оба ответа должны описывать одного и того же пользователя
+        assert user_model_by_id.id == user_model_by_email.id
+        assert user_model_by_id.email == user_model_by_email.email
+        assert user_model_by_id.fullName == user_model_by_email.fullName
+        assert user_model_by_id.roles == user_model_by_email.roles
+        assert user_model_by_id.verified == user_model_by_email.verified
+        assert user_model_by_id.banned == user_model_by_email.banned
+
+        # Сверки с исходным payload создания
+        assert user_model_by_id.id  # не пустой
+        assert user_model_by_id.email == payload.email
+        assert user_model_by_id.fullName == payload.fullName
+        assert Roles.USER in user_model_by_id.roles
+        assert user_model_by_id.verified is True
+
+    def test_get_user_by_email_common_user(self, common_user):
+        # обычный пользователь не имеет права читать других пользователей
+        response = common_user.api.user_api.get_user(common_user.email,
+                                                  expected_status=403)
+        error_model = ForbiddenResponse(**response.json())
+        assert error_model.statusCode == 403
+        assert error_model.error == "Forbidden"
+        assert error_model.message == "Forbidden resource"  # если бек стабилен по тексту

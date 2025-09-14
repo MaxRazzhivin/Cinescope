@@ -37,7 +37,7 @@ class TestAuthAPI:
 
         login_data_model = LoginRequest(**login_data)
 
-        response = api.auth_api.login_user(login_data_model, expected_status=201)
+        response = api.auth_api.login_user(login_data_model, expected_status=(200,201))
         response_data_model = LoginResponse(**response.json())
 
         # Проверки

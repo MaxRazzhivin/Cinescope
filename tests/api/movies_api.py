@@ -1,5 +1,10 @@
+from typing import Union
+
+from pydantic import BaseModel
+
 from constants import MOVIES_URL, MOVIES_ENDPOINT
 from custom_requester.custom_requester import CustomRequester
+from models.movies_model import MoviesFilter
 
 
 class MoviesApi(CustomRequester):
@@ -17,7 +22,8 @@ class MoviesApi(CustomRequester):
             expected_status=expected_status
         )
 
-    def get_movies_with_filter(self, query=None, expected_status=200):
+    def get_movies_with_filter(self, query:Union[MoviesFilter, None] = None,
+                               expected_status=200):
         '''
         Получение фильмов по фильтрам
 
@@ -30,19 +36,24 @@ class MoviesApi(CustomRequester):
             "page": 1, "pageSize": 20
         }
         '''
+
+        params = query.model_dump(exclude_unset=True) if isinstance(query, BaseModel) \
+            else dict(query or {})
+
         return self.send_request(
             method='GET',
             endpoint=MOVIES_ENDPOINT,
-            params=query,
+            params=params,
             expected_status=expected_status
         )
 
-    def create_movie(self, movie_data, expected_status=201):
+    def create_movie(self, movie_data: Union[BaseModel, dict], expected_status=201):
         '''
         :param movie_data: Данные о фильме
         :param expected_status: Ожидаемый статус-код
         :return:
         '''
+
         return self.send_request(
             method='POST',
             endpoint=MOVIES_ENDPOINT,
@@ -50,7 +61,7 @@ class MoviesApi(CustomRequester):
             expected_status=expected_status
         )
 
-    def get_movie_by_id(self, movie_id, expected_status=200):
+    def get_movie_by_id(self, movie_id: int, expected_status=200):
         return self.send_request(
             method='GET',
             endpoint=f'{MOVIES_ENDPOINT}/{movie_id}',
