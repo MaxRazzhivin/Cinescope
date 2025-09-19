@@ -1,14 +1,16 @@
+from typing import Iterator
+
 import pytest
 import requests
-import os
-
-from dotenv import load_dotenv
+from sqlalchemy.orm import Session
 
 from constants import Roles
 from entities.user import User
 from models.movies_model import PostMovieRequest
 from models.user_create_models import CreateUserRequest
 from models.user_model import UserModel, RegisterUserResponse
+from project.db_requester.db_client import get_db_session
+from project.db_requester.db_helpers import DBHelper
 from resources.user_creds import SuperAdminCreds
 from tests.api.api_manager import ApiManager
 from utils.data_generator import DataGenerator
@@ -175,3 +177,52 @@ def created_user(super_admin, creation_user_data):
         super_admin.api.user_api.delete_user(user["id"])
     except Exception:
         pass
+
+
+@pytest.fixture(scope="module")
+def db_session() -> Iterator[Session]:
+    """
+    Фикстура, которая создает и возвращает сессию для работы с базой данных
+    После завершения теста сессия автоматически закрывается
+    """
+    db_session = get_db_session()
+    try:
+        yield db_session
+    finally:
+        db_session.close()
+
+@pytest.fixture(scope="function")
+def db_helper(db_session) -> DBHelper:
+    """
+    Фикстура для экземпляра хелпера
+    """
+    db_helper = DBHelper(db_session)
+    return db_helper
+
+@pytest.fixture(scope="function")
+def created_test_user(db_helper):
+    """
+    Фикстура, которая создает тестового пользователя в БД
+    и удаляет его после завершения теста
+    """
+    user = db_helper.create_test_user(DataGenerator.generate_user_data())
+    try:
+        yield user
+    finally:
+        # Cleanup после теста
+        if db_helper.get_user_by_id(user.id):
+            db_helper.delete_user(user)
+
+@pytest.fixture(scope="function")
+def created_test_movie(db_helper):
+    """
+    Фикстура, которая создает тестовый фильм в БД
+    и удаляет его после завершения теста
+    """
+    movie = db_helper.create_test_movie(DataGenerator.generate_movie_data())
+    try:
+        yield movie
+    finally:
+        # Cleanup после теста
+        if db_helper.get_movie_by_id(movie.id):
+            db_helper.delete_movie(movie)

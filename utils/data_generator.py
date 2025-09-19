@@ -1,5 +1,7 @@
+import datetime
 import random
 import string
+from time import timezone
 
 from faker import Faker
 
@@ -75,5 +77,28 @@ class DataGenerator:
             'location': random.choice(['MSK', 'SPB']),
             'published': random.choice([True, False]),
             'genreId': random.randint(1, 4),
+            'rating': random.randint(1, 5),
+            'createdAt': datetime.datetime.now(datetime.timezone.utc)
+        }
 
+    """
+    Добавим метод, который сразу делает рандомные данные,
+    которые можно сразу передать в метод создания юзера через БД
+    """
+
+    @staticmethod
+    def generate_user_data() -> dict:
+        """Генерирует данные для тестового пользователя"""
+        from uuid import uuid4
+
+        return {
+            'id': f'{uuid4()}',  # генерируем UUID как строку
+            'email': DataGenerator.generate_random_email(),
+            'full_name': DataGenerator.generate_random_name(),
+            'password': DataGenerator.generate_random_password(),
+            'created_at': datetime.datetime.now(),
+            'updated_at': datetime.datetime.now(),
+            'verified': False,
+            'banned': False,
+            'roles': '{USER}'
         }
