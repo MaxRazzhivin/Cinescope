@@ -55,3 +55,4 @@ class TestDatabase:
 
         # Проверяем негативный сценарий по несуществующему id
         assert db_helper.movie_exists_by_id(0) is False
+

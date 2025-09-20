@@ -1,7 +1,6 @@
 import datetime
 import random
 import string
-from time import timezone
 
 from faker import Faker
 
@@ -102,3 +101,7 @@ class DataGenerator:
             'banned': False,
             'roles': '{USER}'
         }
+
+    @classmethod
+    def generate_random_int(cls, param):
+        pass
