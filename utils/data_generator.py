@@ -70,7 +70,7 @@ class DataGenerator:
         '''
         return {
             'name': faker.sentence(nb_words=3).rstrip('.'), # случайное название из 3
-            # букв и удаление точки в конце имени
+            #  слов и удаление точки в конце имени
             'price': random.randint(50,1000),
             'description': faker.text(max_nb_chars=100), # случайное описание,
             # не более 100 букв

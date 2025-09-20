@@ -51,6 +51,7 @@ class PostMovieRequest(BaseModel):
     location: Location
     published: bool
     genreId: int
+    rating: int | None = None
 
 class PatchMovieRequest(BaseModel):
     name: Optional[str] = None

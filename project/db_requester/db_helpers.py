@@ -76,6 +76,10 @@ class DBHelper:
         return (self.db_session.query(MovieDBModel).filter_by(id=movie_id).first() is
                 not None)
 
+    def movie_exists_by_name(self, movie_name: str) -> bool:
+        """Проверяет существование фильма по названию"""
+        return self.get_movie_by_name(movie_name) is not None
+
     def delete_user(self, user: UserDBModel):
         """Удаляет пользователя"""
         self.db_session.delete(user)
