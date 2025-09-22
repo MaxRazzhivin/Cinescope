@@ -1,3 +1,4 @@
+import time
 from typing import Iterator
 
 import pytest
@@ -226,3 +227,8 @@ def created_test_movie(db_helper):
         # Cleanup после теста
         if db_helper.get_movie_by_id(movie.id):
             db_helper.delete_movie(movie)
+
+@pytest.fixture
+def delay_between_retries():
+    time.sleep(5)
+    yield

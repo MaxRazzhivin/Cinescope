@@ -1,0 +1,27 @@
+2025-09-22 19:00:43,376 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-22 19:00:43,379 INFO sqlalchemy.engine.Engine INSERT INTO movies (name, description, genre_id, image_url, price, rating, location, published, created_at) VALUES (%(name)s, %(description)s, %(genre_id)s, %(image_url)s, %(price)s, %(rating)s, %(location)s, %(published)s, %(created_at)s) RETURNING movies.id
+2025-09-22 19:00:43,380 INFO sqlalchemy.engine.Engine [generated in 0.00042s] {'name': 'Through brother inside', 'description': 'Else popular indeed natural trial. Various identify discuss simple. Factor no difference phone.', 'genre_id': 2, 'image_url': None, 'price': Decimal('790'), 'rating': 4, 'location': 'MSK', 'published': True, 'created_at': datetime.datetime(2025, 9, 22, 16, 0, 43, 242595, tzinfo=datetime.timezone.utc)}
+2025-09-22 19:00:43,657 DEBUG sqlalchemy.engine.Engine Col ('id',)
+2025-09-22 19:00:43,657 DEBUG sqlalchemy.engine.Engine Row (14716,)
+2025-09-22 19:00:43,658 INFO sqlalchemy.engine.Engine COMMIT
+2025-09-22 19:00:43,928 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-09-22 19:00:43,931 INFO sqlalchemy.engine.Engine SELECT movies.id, movies.name, movies.description, movies.genre_id, movies.image_url, movies.price, movies.rating, movies.location, movies.published, movies.created_at 
+FROM movies 
+WHERE movies.id = %(pk_1)s
+2025-09-22 19:00:43,931 INFO sqlalchemy.engine.Engine [generated in 0.00040s] {'pk_1': 14716}
+2025-09-22 19:00:44,208 DEBUG sqlalchemy.engine.Engine Col ('id', 'name', 'description', 'genre_id', 'image_url', 'price', 'rating', 'location', 'published', 'created_at')
+2025-09-22 19:00:44,209 DEBUG sqlalchemy.engine.Engine Row (14716, 'Through brother inside', 'Else popular indeed natural trial. Various identify discuss simple. Factor no difference phone.', 2, None, 790.0, 4.0, 'MSK', True, datetime.datetime(2025, 9, 22, 16, 0, 43, 243000))
+2025-09-22 19:00:44,745 INFO sqlalchemy.engine.Engine SELECT movies.id AS movies_id, movies.name AS movies_name, movies.description AS movies_description, movies.genre_id AS movies_genre_id, movies.image_url AS movies_image_url, movies.price AS movies_price, movies.rating AS movies_rating, movies.location AS movies_location, movies.published AS movies_published, movies.created_at AS movies_created_at 
+FROM movies 
+WHERE movies.id = %(id_1)s 
+ LIMIT %(param_1)s
+2025-09-22 19:00:44,745 INFO sqlalchemy.engine.Engine [generated in 0.00040s] {'id_1': 14716, 'param_1': 1}
+2025-09-22 19:00:44,881 DEBUG sqlalchemy.engine.Engine Col ('movies_id', 'movies_name', 'movies_description', 'movies_genre_id', 'movies_image_url', 'movies_price', 'movies_rating', 'movies_location', 'movies_published', 'movies_created_at')
+2025-09-22 19:00:44,882 DEBUG sqlalchemy.engine.Engine Row (14716, 'Through brother inside', 'Else popular indeed natural trial. Various identify discuss simple. Factor no difference phone.', 2, None, 790.0, 4.0, 'MSK', True, datetime.datetime(2025, 9, 22, 16, 0, 43, 243000))
+2025-09-22 19:00:45,644 INFO sqlalchemy.engine.Engine SELECT movies.id AS movies_id, movies.name AS movies_name, movies.description AS movies_description, movies.genre_id AS movies_genre_id, movies.image_url AS movies_image_url, movies.price AS movies_price, movies.rating AS movies_rating, movies.location AS movies_location, movies.published AS movies_published, movies.created_at AS movies_created_at 
+FROM movies 
+WHERE movies.id = %(id_1)s 
+ LIMIT %(param_1)s
+2025-09-22 19:00:45,645 INFO sqlalchemy.engine.Engine [cached since 0.8997s ago] {'id_1': 14716, 'param_1': 1}
+2025-09-22 19:00:45,784 DEBUG sqlalchemy.engine.Engine Col ('movies_id', 'movies_name', 'movies_description', 'movies_genre_id', 'movies_image_url', 'movies_price', 'movies_rating', 'movies_location', 'movies_published', 'movies_created_at')
+2025-09-22 19:00:45,948 INFO sqlalchemy.engine.Engine ROLLBACK

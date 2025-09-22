@@ -1,3 +1,4 @@
+allure-python-commons
 sqlalchemy
 jsonschema
 pytest
@@ -5,3 +6,4 @@ requests
 faker
 python-dotenv
 pydantic
+allure-pytest
