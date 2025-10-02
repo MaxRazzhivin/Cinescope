@@ -9,8 +9,8 @@ class CinescopRegisterPage(BasePage):
         self.url = "https://dev-cinescope.coconutqa.ru/register"
 
         # Локаторы элементов
-        self.home_button = "a[href='/' and text()='Cinescope']"
-        self.all_movies_button = "a[href='/movies']:has_text('Все фильмы')"
+        self.home_button = "//a[href='/' and text()='Cinescope']"
+        self.all_movies_button = "//a[href='/movies' and text()='Все фильмы']"
 
         self.full_name_input = "input[name='fullName']"
         self.email_input = "input[name='email']"
@@ -19,7 +19,7 @@ class CinescopRegisterPage(BasePage):
 
         self.register_button = 'button[type="submit"]'
 
-        self.sign_button = "a[href='/login']:has-text('Войти')"
+        self.sign_button = "//a[href='/login' and text()='Войти']"
 
     # Шапка страницы
     def go_to_home_page(self):
@@ -91,14 +91,14 @@ class CinescopLoginPage(BasePage):
         self.url = "https://dev-cinescope.coconutqa.ru/login"
 
         # Локаторы элементов
-        self.home_button = "a[href='/']:has-text('Cinescope')"
-        self.all_movies_button = "a[href='/movies']:has-text('Все фильмы')"
+        self.home_button = "//a[href='/' and text()='Cinescope']"
+        self.all_movies_button = "//a[href='/movies' and text()='Все фильмы']"
 
         self.email_input = "input[name='email']"
         self.password_input = "input[name='password']"
 
         self.login_button = "button[type='submit']:has-text('Войти')"
-        self.register_button = "a[href='/register']:has-text('Зарегистрироваться')"
+        self.register_button = "//a[href='/register' and text()='Зарегистрироваться']"
 
     # Обработчики локаторов на шапке страницы
     def go_to_home_page(self):

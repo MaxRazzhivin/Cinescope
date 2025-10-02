@@ -1,0 +1,57 @@
+2025-10-02 11:31:57 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:31:57 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Content-Length: 53' \
+-d '{"email": "api1@gmail.com", "password": "asdqwe123Q"}' 
+
+2025-10-02 11:31:57 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:31:57 INFO 	STATUS_CODE: [32m200[0m
+	DATA:
+{
+    "user": {
+        "id": "4cc5bb1c-6bf7-4928-8f2f-8cf8ff41e200",
+        "email": "api1@gmail.com",
+        "fullName": "ФИО пользователя",
+        "roles": [
+            "USER",
+            "ADMIN",
+            "SUPER_ADMIN"
+        ]
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkzOTE3LCJleHAiOjE3NTkzOTU3MTd9._eUaYGNsbYsJDvXzbyb1lFhdQj7oDKS8_OWB_WS3mtQ",
+    "refreshToken": "54d8ac59-56f2-416c-a4a2-b41734cc5782",
+    "expiresIn": 1759395717740
+}
+2025-10-02 11:31:57 INFO ================================================================================
+
+2025-10-02 11:31:58 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:31:58 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/register' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkzOTE3LCJleHAiOjE3NTkzOTU3MTd9._eUaYGNsbYsJDvXzbyb1lFhdQj7oDKS8_OWB_WS3mtQ' \
+-H 'Cookie: refresh_token=54d8ac59-56f2-416c-a4a2-b41734cc5782' \
+-H 'Content-Length: 133' \
+-d '{"email": "keksqjz7bhb@gmail.com", "fullName": "John Owens", "password": "4ufIl9xw", "passwordRepeat": "4ufIl9xw", "roles": ["USER"]}' 
+
+2025-10-02 11:31:58 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:31:58 INFO 	STATUS_CODE: [32m201[0m
+	DATA:
+{
+    "id": "29bd3142-7c54-40da-889d-c1544cd205c1",
+    "email": "keksqjz7bhb@gmail.com",
+    "fullName": "John Owens",
+    "verified": true,
+    "banned": false,
+    "roles": [
+        "USER"
+    ],
+    "createdAt": "2025-10-02T08:31:58.121Z"
+}
+2025-10-02 11:31:58 INFO ================================================================================

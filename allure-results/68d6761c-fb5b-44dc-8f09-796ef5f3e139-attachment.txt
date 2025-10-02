@@ -1,0 +1,57 @@
+2025-10-02 11:27:07 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:27:07 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Content-Length: 53' \
+-d '{"email": "api1@gmail.com", "password": "asdqwe123Q"}' 
+
+2025-10-02 11:27:07 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:27:07 INFO 	STATUS_CODE: [32m200[0m
+	DATA:
+{
+    "user": {
+        "id": "4cc5bb1c-6bf7-4928-8f2f-8cf8ff41e200",
+        "email": "api1@gmail.com",
+        "fullName": "ФИО пользователя",
+        "roles": [
+            "USER",
+            "ADMIN",
+            "SUPER_ADMIN"
+        ]
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkzNjI3LCJleHAiOjE3NTkzOTU0Mjd9.OD9_IMcUJSCRlVDETKkCWPaWeuFtIwgY5FV-XQsQ59c",
+    "refreshToken": "caf61fce-e255-4592-a7ef-7805e5d6bbe1",
+    "expiresIn": 1759395427429
+}
+2025-10-02 11:27:07 INFO ================================================================================
+
+2025-10-02 11:27:07 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:27:07 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/register' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkzNjI3LCJleHAiOjE3NTkzOTU0Mjd9.OD9_IMcUJSCRlVDETKkCWPaWeuFtIwgY5FV-XQsQ59c' \
+-H 'Cookie: refresh_token=caf61fce-e255-4592-a7ef-7805e5d6bbe1' \
+-H 'Content-Length: 139' \
+-d '{"email": "kek7vh91eds@gmail.com", "fullName": "Daniel Cox", "password": "&#oz2^i?bXn", "passwordRepeat": "&#oz2^i?bXn", "roles": ["USER"]}' 
+
+2025-10-02 11:27:07 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:27:07 INFO 	STATUS_CODE: [32m201[0m
+	DATA:
+{
+    "id": "23772813-7faa-4fe0-8c07-c1081d333e17",
+    "email": "kek7vh91eds@gmail.com",
+    "fullName": "Daniel Cox",
+    "verified": true,
+    "banned": false,
+    "roles": [
+        "USER"
+    ],
+    "createdAt": "2025-10-02T08:27:07.837Z"
+}
+2025-10-02 11:27:07 INFO ================================================================================
