@@ -1,0 +1,57 @@
+2025-10-02 11:08:35 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:08:35 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/login' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Content-Length: 53' \
+-d '{"email": "api1@gmail.com", "password": "asdqwe123Q"}' 
+
+2025-10-02 11:08:35 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:08:35 INFO 	STATUS_CODE: [32m200[0m
+	DATA:
+{
+    "user": {
+        "id": "4cc5bb1c-6bf7-4928-8f2f-8cf8ff41e200",
+        "email": "api1@gmail.com",
+        "fullName": "ФИО пользователя",
+        "roles": [
+            "USER",
+            "ADMIN",
+            "SUPER_ADMIN"
+        ]
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkyNTE1LCJleHAiOjE3NTkzOTQzMTV9.lYIMXmRr3Atb51Rdg4GqZRM9sfRWn9dquEECdN9-6jo",
+    "refreshToken": "fd46a96e-5c96-4c15-a060-0ddba7be09eb",
+    "expiresIn": 1759394315338
+}
+2025-10-02 11:08:35 INFO ================================================================================
+
+2025-10-02 11:08:35 INFO 
+======================================== REQUEST ========================================
+2025-10-02 11:08:35 INFO [32mpytest tests/ui/test_login_page.py::TestloginPage::test_login_by_ui (setup)[0m
+curl -X POST 'https://auth.dev-cinescope.coconutqa.ru/register' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzViYjFjLTZiZjctNDkyOC04ZjJmLThjZjhmZjQxZTIwMCIsImVtYWlsIjoiYXBpMUBnbWFpbC5jb20iLCJyb2xlcyI6WyJVU0VSIiwiQURNSU4iLCJTVVBFUl9BRE1JTiJdLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzU5MzkyNTE1LCJleHAiOjE3NTkzOTQzMTV9.lYIMXmRr3Atb51Rdg4GqZRM9sfRWn9dquEECdN9-6jo' \
+-H 'Cookie: refresh_token=fd46a96e-5c96-4c15-a060-0ddba7be09eb' \
+-H 'Content-Length: 148' \
+-d '{"email": "kekut1daocy@gmail.com", "fullName": "Zachary Dominguez", "password": ":y57J|u4rr5&", "passwordRepeat": ":y57J|u4rr5&", "roles": ["USER"]}' 
+
+2025-10-02 11:08:35 INFO 
+======================================== RESPONSE ========================================
+2025-10-02 11:08:35 INFO 	STATUS_CODE: [32m201[0m
+	DATA:
+{
+    "id": "cba5ec40-d098-4d04-8d12-69beb1438cec",
+    "email": "kekut1daocy@gmail.com",
+    "fullName": "Zachary Dominguez",
+    "verified": true,
+    "banned": false,
+    "roles": [
+        "USER"
+    ],
+    "createdAt": "2025-10-02T08:08:35.720Z"
+}
+2025-10-02 11:08:35 INFO ================================================================================
